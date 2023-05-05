@@ -26,31 +26,39 @@ router.get("/login", (req, res) => {
 
 
 router.post('/register', (req, res) => {
-    bcrypt.hash(req.body.password, saltrounds, (err, hash) => {
-        let newUser = new User(req.body);
-        newUser.password = hash;
-        newUser.save().then(() => {
-            res.send("New User Created.");
-        }).catch((err) => {
-            res.send(err);
-        });
+    User.register({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+    }, req.body.password, (err) => {
+        if (err) {
+            console.log(err);
+            res.redirect("/user/register");
+        } else {
+            passport.authenticate("local")(req, res, () => {
+                res.redirect("/user/login");
+            });
+        }
     });
 });
 
 router.post("/login", (req, res) => {
-    User.findOne({email: req.body.username}).then((foundUser) => {
-        if (foundUser){
-            bcrypt.compare(req.body.password, foundUser.password, (err, result) => {
-                if (err){
-                    res.send(err);
-                } else {
-                    passport.authenticate("local")(req, res, () => {
-                        res.send("logged in");
-                    })
-                }
-            })
+    const newUser = new User({
+        username: req.body.username,
+        password: req.body.password
+    });
+    req.login(newUser, (err) => {
+        if (err) {
+            console.log(err);
+            res.redirect("/user/login");
+        } else {
+            console.log("password good");
+            passport.authenticate("local")(req, res, () => {
+                console.log("authenticated");
+                res.redirect("/authed");
+            });
         }
-    })
+    });
 });
 
 
