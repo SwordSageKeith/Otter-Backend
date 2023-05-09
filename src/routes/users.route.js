@@ -29,14 +29,13 @@ router.post('/register', (req, res) => {
     User.register({
         username: req.body.username,
         email: req.body.email,
-        password: req.body.password
     }, req.body.password, (err) => {
         if (err) {
             console.log(err);
             res.redirect("/user/register");
         } else {
             passport.authenticate("local")(req, res, () => {
-                res.redirect("/user/login");
+                res.redirect("/authed");
             });
         }
     });

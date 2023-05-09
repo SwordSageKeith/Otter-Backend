@@ -12,10 +12,6 @@ var user = new Schema({
     displayName: {
         type: String
     },
-    password: {
-        type: String,
-        required: [true, "Must have password"]
-    },
     email: {
         type: String
     },

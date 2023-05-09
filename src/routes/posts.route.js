@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
 });
   
 router.post('/', (req, res) => {
-    var newPost = new Post({content:req.body.content});
+    var newPost = new Post({title: req.body.title ,content:req.body.content, userID: req.user._id});
     newPost.save().then(() => {
         res.send("success");
     }).catch((err) => {
